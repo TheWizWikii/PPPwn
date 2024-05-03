@@ -1,77 +1,77 @@
 # PPPwn - PlayStation 4 PPPoE RCE
-PPPwn is a kernel remote code execution exploit for PlayStation 4 up to FW 11.00. This is a proof-of-concept exploit for [CVE-2006-4304](https://hackerone.com/reports/2177925) that was reported responsibly to PlayStation.
+PPPwn es un exploit de ejecución remota de código de kernel para PlayStation 4 hasta FW 11.00. Este es un exploit de concepto de prueba para [CVE-2006-4304](https://hackerone.com/reports/2177925) que fue reportado de manera responsable a PlayStation.
 
-Supported versions are:
+Las versiones admitidas son:
 - FW 9.00
 - FW 9.03 / 9.04
 - FW 9.50 / 9.60
 - FW 10.00 / 10.01
 - FW 10.50 / 10.70 / 10.71
 - FW 11.00
-- more can be added (PRs are welcome)
+- pueden agregarse más (se aceptan solicitudes de extracción)
 
-The exploit only prints `PPPwned` on your PS4 as a proof-of-concept. In order to launch Mira or similar homebrew enablers, the `stage2.bin` payload needs to be adapted.
+El exploit solo imprime `PPPwned` en tu PS4 como prueba de concepto. Para lanzar Mira u otros habilitadores de software casero similares, el payload `stage2.bin` necesita ser adaptado.
 
-## Requirements
-- A computer with an Ethernet port
-  - USB adapter also works
-- Ethernet cable
+## Requisitos
+- Una computadora con un puerto Ethernet
+  - También funciona un adaptador USB
+- Cable Ethernet
 - Linux
-  - You can use VirtualBox to create a Linux VM with `Bridged Adapter` as network adapter to use the ethernet port in the VM.
-- Python3 and gcc installed
+  - Puedes usar VirtualBox para crear una máquina virtual de Linux con `Adaptador en puente` como adaptador de red para usar el puerto Ethernet en la VM.
+- Python3 y gcc instalados
 
-## Usage
+## Uso
 
-On your computer, clone the repository:
+En tu computadora, clona el repositorio:
 
 ```sh
 git clone --recursive https://github.com/TheOfficialFloW/PPPwn
 ```
 
-Change the directory to the cloned repository:
+Cambia al directorio del repositorio clonado:
 
 ```sh
 cd PPPwn
 ```
 
-Install the requirements:
+Instala los requisitos:
 
 ```sh
 sudo pip install -r requirements.txt
 ```
 
-Compile the payloads:
+Compila los payloads:
 
 ```sh
 make -C stage1 FW=1100 clean && make -C stage1 FW=1100
 make -C stage2 FW=1100 clean && make -C stage2 FW=1100
 ```
 
-For other firmwares, e.g. FW 9.00, pass `FW=900`.
+Para otros firmware, por ejemplo FW 9.00, pasa `FW=900`.
 
-Run the exploit (see `ifconfig` for the correct interface):
+Ejecuta el exploit (consulta `ifconfig` para la interfaz correcta):
 
 ```sh
 sudo python3 pppwn.py --interface=enp0s3 --fw=1100
 ```
 
-For other firmwares, e.g. FW 9.00, pass `--fw=900`.
+Para otros firmware, por ejemplo FW 9.00, pasa `--fw=900`.
 
-On your PS4:
+En tu PS4:
 
-- Go to `Settings` and then `Network`
-- Select `Set Up Internet connection` and choose `Use a LAN Cable`
-- Choose `Custom` setup and choose `PPPoE` for `IP Address Settings`
-- Enter anything for `PPPoE User ID` and `PPPoE Password`
-- Choose `Automatic` for `DNS Settings` and `MTU Settings`
-- Choose `Do Not Use` for `Proxy Server`
-- Click `Test Internet Connection` to communicate with your computer
+- Ve a `Configuración` y luego a `Red`
+- Selecciona `Configurar conexión a Internet` y elige `Usar cable LAN`
+- Elije configuración `Personalizada` y elige `PPPoE` para `Configuración de direcciones IP`
+- Ingresa cualquier cosa para `ID de usuario PPPoE` y `Contraseña PPPoE`
+- Elige `Automático` para `Configuración de DNS` y `Configuración de MTU`
+- Elige `No usar` para `Servidor proxy`
+- Haz clic en `Probar conexión a Internet` para comunicarte con tu computadora
 
-If the exploit fails or the PS4 crashes, you can skip the internet setup and simply click on `Test Internet Connection`. If the `pppwn.py` script is stuck waiting for a request/response, abort it and run it again on your computer, and then click on `Test Internet Connection` on your PS4.
+Si el exploit falla o la PS4 se bloquea, puedes omitir la configuración de internet y simplemente hacer clic en `Probar conexión a Internet`. Si el script `pppwn.py` está atascado esperando una solicitud/respueta, aborta y ejecútalo nuevamente en tu computadora, luego haz clic en `Probar conexión a Internet` en tu PS4.
 
-If the exploit works, you should see an output similar to below, and you should see `Cannot connect to network.` followed by `PPPwned` printed on your PS4.
+Si el exploit funciona, deberías ver una salida similar a la siguiente, y deberías ver `No se puede conectar a la red.` seguido de `PPPwned` impreso en tu PS4.
 
-### Example run
+### Ejecución de ejemplo
 
 ```sh
 [+] PPPwn - PlayStation 4 PPPoE RCE by theflow
@@ -154,10 +154,3 @@ If the exploit works, you should see an output similar to below, and you should 
 [+] STAGE 4: Arbitrary payload execution
 [*] Sending stage2 payload...
 [+] Done!
-```
-
-## Notes for Mac Apple Silicon Users (arm64 / aarch64)
-The code will not compile on Apple Silicon and requires AMD64 architecture. 
-There is a workaround using docker which will build the bin files required.
-Clone this repository to your mac system, then from the repo folder run `./build-macarm.sh`.This will build the binaries for PS4 FW 1100 and place the necessary files into the correct folders. To build the binaries for a different version, i.e. 900, run the command as such: `./build-macarm.sh 900`. Once built, copy this folder structure into the Linux VM and execute as instructed above. 
-This has been tested using VMware Fusion 13.5.1, with the VM Guest as Ubuntu 24.04, and the host machine is MacOS 14.4.1
