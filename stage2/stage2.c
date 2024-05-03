@@ -143,7 +143,7 @@ void stage2(void) {
   OrbisNotificationRequest notify = {};
   notify.targetId = -1;
   notify.useIconImageUri = 1;
-  memcpy(&notify.message, "PPPwned", 8);
+  memcpy(&notify.message, "PPPwned TheWizWiki", 8);
 
   struct thread *td = curthread;
 
